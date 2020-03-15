@@ -323,6 +323,9 @@ namespace {
 namespace dal {
 
     std::unique_ptr<v1::MapChunkInfo> parseDLB_v1(const uint8_t* const buf, const size_t bufSize) {
+        if ( nullptr == buf )
+            return nullptr;
+
         const char* const magicBits = "dalmap";
         if ( 0 != std::memcmp(buf, magicBits, 6) ) {
             //dalError("Given datablock does not start with magic numbers.");

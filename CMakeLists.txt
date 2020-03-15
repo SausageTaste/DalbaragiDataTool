@@ -5,7 +5,7 @@ project(DalbaragiDataTool
 )
 
 
-# Create library
+### Create library
 
 set(lib_inclusion_path ./include)
 
@@ -18,7 +18,7 @@ target_include_directories(dalDataTool PUBLIC ${lib_inclusion_path})
 target_compile_features(dalDataTool PUBLIC cxx_std_14)
 
 
-# Link to library
+### Link to library
 
 set(repo_root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 set(extern_dir ${repo_root_dir}/extern)
@@ -31,4 +31,10 @@ if (NOT TARGET zlibstatic)
 endif()
 
 # GLM
-target_include_directories(dalDataTool PRIVATE ${extern_dir}/glm)
+target_include_directories(dalDataTool PUBLIC ${extern_dir}/glm)
+
+
+### Test
+
+enable_testing()
+add_subdirectory(tests)
