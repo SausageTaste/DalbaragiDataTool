@@ -1,0 +1,7 @@
+[submodule "extern/glm"]
+	path = extern/glm
+	url = https://github.com/g-truc/glm
+[submodule "extern/zlib"]
+	path = extern/zlib
+	url = https://github.com/madler/zlib
+	ignore = dirty
