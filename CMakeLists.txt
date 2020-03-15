@@ -31,8 +31,10 @@ if (NOT TARGET zlibstatic)
 endif()
 
 # GLM
-target_include_directories(dalDataTool PUBLIC ${extern_dir}/glm)
-
+if (NOT TARGET glm::glm)
+    add_subdirectory(${extern_dir}/glm ${CMAKE_CURRENT_BINARY_DIR}/glm)
+    target_include_directories(dalDataTool PUBLIC ${extern_dir}/glm)
+endif()
 
 ### Test
 
