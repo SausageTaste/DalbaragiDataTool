@@ -27,7 +27,6 @@ set(extern_dir ${repo_root_dir}/extern)
 if (NOT TARGET miniz)
     add_subdirectory(${extern_dir}/miniz ${CMAKE_CURRENT_BINARY_DIR}/miniz)
     target_link_libraries(dalDataTool PRIVATE miniz)
-    target_include_directories(dalDataTool PRIVATE ${extern_dir}/miniz ${CMAKE_CURRENT_BINARY_DIR}/miniz)
 endif()
 
 # GLM

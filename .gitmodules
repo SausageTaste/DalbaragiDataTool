@@ -4,3 +4,4 @@
 [submodule "extern/miniz"]
 	path = extern/miniz
 	url = https://github.com/richgel999/miniz
+	ignore = dirty
