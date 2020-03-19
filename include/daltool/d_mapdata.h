@@ -8,7 +8,7 @@
 #include <glm/gtc/quaternion.hpp>
 
 
-namespace dal {
+namespace daldata {
     namespace v1 {
 
         struct Mesh {

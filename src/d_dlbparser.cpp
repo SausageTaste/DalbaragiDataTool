@@ -38,7 +38,7 @@ namespace {
     std::vector<uint8_t> uncompressMap(const uint8_t* const buf, const size_t bufSize) {
         std::vector<uint8_t> result;
 
-        const auto allocatedSize = static_cast<size_t>(1.01 * dal::makeInt4(buf));  // Just to ensure that buffer never lacks.
+        const auto allocatedSize = static_cast<size_t>(1.01 * daldata::makeInt4(buf));  // Just to ensure that buffer never lacks.
         result.resize(allocatedSize);
         const auto unzippedSize = unzip(result.data(), result.size(), buf + 4, bufSize - 4);
 
@@ -91,7 +91,7 @@ namespace {
 
     const uint8_t* parseVec3(glm::vec3& info, const uint8_t* begin, const uint8_t* const end) {
         float fbuf[3];
-        begin = dal::assemble4BytesArray<float>(begin, fbuf, 3);
+        begin = daldata::assemble4BytesArray<float>(begin, fbuf, 3);
         info.x = fbuf[0];
         info.y = fbuf[1];
         info.z = fbuf[2];
@@ -109,9 +109,9 @@ namespace {
     }
 
     const uint8_t* parseFloatList(std::vector<float>& info, const uint8_t* begin, const uint8_t* const end) {
-        const auto arrSize = dal::makeInt4(begin); begin += 4;
+        const auto arrSize = daldata::makeInt4(begin); begin += 4;
         info.resize(arrSize);
-        begin = dal::assemble4BytesArray<float>(begin, info.data(), arrSize);
+        begin = daldata::assemble4BytesArray<float>(begin, info.data(), arrSize);
 
         assertHeaderPtr(begin, end);
         return begin;
@@ -123,17 +123,17 @@ namespace {
 // Data blocks
 namespace {
 
-    const uint8_t* parseMesh(dal::v1::Mesh& info, const uint8_t* begin, const uint8_t* const end) {
+    const uint8_t* parseMesh(daldata::v1::Mesh& info, const uint8_t* begin, const uint8_t* const end) {
         begin = parseFloatList(info.m_vertices, begin, end); assert(begin < end);
         begin = parseFloatList(info.m_uvCoords, begin, end); assert(begin < end);
         begin = parseFloatList(info.m_normals, begin, end); assert(begin < end);
         return begin;
     }
 
-    const uint8_t* parseMaterial(dal::v1::Material& info, const uint8_t* begin, const uint8_t* const end) {
+    const uint8_t* parseMaterial(daldata::v1::Material& info, const uint8_t* begin, const uint8_t* const end) {
         {
             float floatBuf[7];
-            begin = dal::assemble4BytesArray<float>(begin, floatBuf, 4);
+            begin = daldata::assemble4BytesArray<float>(begin, floatBuf, 4);
 
             info.m_roughness = floatBuf[0];
             info.m_metallic = floatBuf[1];
@@ -149,7 +149,7 @@ namespace {
         return begin;
     }
 
-    const uint8_t* parseRenderUnit(dal::v1::RenderUnit& info, const uint8_t* begin, const uint8_t* const end) {
+    const uint8_t* parseRenderUnit(daldata::v1::RenderUnit& info, const uint8_t* begin, const uint8_t* const end) {
         // Mesh variant
         throw 4;
 
@@ -158,9 +158,9 @@ namespace {
         return begin;
     }
 
-    const uint8_t* parseTransform(dal::v1::Transform& info, const uint8_t* begin, const uint8_t* const end) {
+    const uint8_t* parseTransform(daldata::v1::Transform& info, const uint8_t* begin, const uint8_t* const end) {
         float floatBuf[8];
-        begin = dal::assemble4BytesArray<float>(begin, floatBuf, 8);
+        begin = daldata::assemble4BytesArray<float>(begin, floatBuf, 8);
 
         info.m_pos = glm::vec3{ floatBuf[0], floatBuf[1], floatBuf[2] };
         info.m_rot = glm::quat{ floatBuf[6], floatBuf[3], floatBuf[4], floatBuf[5] };
@@ -169,7 +169,7 @@ namespace {
         return begin;
     }
 
-    const uint8_t* parseStaticActor(dal::v1::StaticActor& info, const uint8_t* begin, const uint8_t* const end) {
+    const uint8_t* parseStaticActor(daldata::v1::StaticActor& info, const uint8_t* begin, const uint8_t* const end) {
         begin = parseStr(info.m_name, begin, end);
         begin = parseTransform(info.m_trans, begin, end);
         return begin;
@@ -186,12 +186,12 @@ namespace {
 
 
     const uint8_t* parseMetadata(Metadata& info, const uint8_t* begin, const uint8_t* const end) {
-        info.m_binVersion = dal::makeInt4(begin); begin += 4;
+        info.m_binVersion = daldata::makeInt4(begin); begin += 4;
 
         return begin;
     }
 
-    const uint8_t* parseModelEmbedded(dal::v1::ModelEmbedded& info, const uint8_t* begin, const uint8_t* const end) {
+    const uint8_t* parseModelEmbedded(daldata::v1::ModelEmbedded& info, const uint8_t* begin, const uint8_t* const end) {
         // Name
         {
             begin = parseStr(info.m_name, begin, end);
@@ -199,7 +199,7 @@ namespace {
 
         // Render units
         {
-            const auto numUnits = dal::makeInt4(begin); begin += 4;
+            const auto numUnits = daldata::makeInt4(begin); begin += 4;
             info.m_renderUnits.resize(numUnits);
 
             for ( auto& unit : info.m_renderUnits ) {
@@ -209,7 +209,7 @@ namespace {
 
         // Static actors
         {
-            const auto numActors = dal::makeInt4(begin); begin += 4;
+            const auto numActors = daldata::makeInt4(begin); begin += 4;
             info.m_staticActors.resize(numActors);
 
             for ( auto& actor : info.m_staticActors ) {
@@ -218,10 +218,10 @@ namespace {
         }
 
         // Flag detailed collider
-        const auto flagDetailedCol = dal::makeBool1(begin); begin += 1;
+        const auto flagDetailedCol = daldata::makeBool1(begin); begin += 1;
 
         // Has rotating actor
-        const auto hasRotatingActor = dal::makeBool1(begin); begin += 1;
+        const auto hasRotatingActor = daldata::makeBool1(begin); begin += 1;
 
         // Build mesh data
         {
@@ -253,12 +253,12 @@ namespace {
         return begin;
     }
 
-    const uint8_t* parseModelImported(dal::v1::ModelImported& info, const uint8_t* begin, const uint8_t* const end) {
+    const uint8_t* parseModelImported(daldata::v1::ModelImported& info, const uint8_t* begin, const uint8_t* const end) {
         begin = parseStr(info.m_resID, begin, end);
 
         // Static actors
         {
-            const auto numActors = dal::makeInt4(begin); begin += 4;
+            const auto numActors = daldata::makeInt4(begin); begin += 4;
             info.m_staticActors.resize(numActors);
 
             for ( auto& actor : info.m_staticActors ) {
@@ -268,16 +268,16 @@ namespace {
 
         // Flag detailed collider
         {
-            info.m_detailedCollider = dal::makeBool1(begin); begin += 1;
+            info.m_detailedCollider = daldata::makeBool1(begin); begin += 1;
         }
 
         assertHeaderPtr(begin, end);
         return begin;
     }
 
-    const uint8_t* parseWaterPlane(dal::v1::WaterPlane& info, const uint8_t* begin, const uint8_t* const end) {
+    const uint8_t* parseWaterPlane(daldata::v1::WaterPlane& info, const uint8_t* begin, const uint8_t* const end) {
         float fbuf[12];
-        begin = dal::assemble4BytesArray<float>(begin, fbuf, 12);
+        begin = daldata::assemble4BytesArray<float>(begin, fbuf, 12);
 
         info.m_pos.x = fbuf[0];
         info.m_pos.y = fbuf[1];
@@ -298,9 +298,9 @@ namespace {
         return begin;
     }
 
-    const uint8_t* parsePlight(dal::v1::PointLight& info, const uint8_t* begin, const uint8_t* const end) {
+    const uint8_t* parsePlight(daldata::v1::PointLight& info, const uint8_t* begin, const uint8_t* const end) {
         float fbuf[7];
-        begin = dal::assemble4BytesArray<float>(begin, fbuf, 7);
+        begin = daldata::assemble4BytesArray<float>(begin, fbuf, 7);
 
         info.m_color.x = fbuf[0];
         info.m_color.y = fbuf[1];
@@ -318,7 +318,7 @@ namespace {
 }
 
 
-namespace dal {
+namespace daldata {
 
     std::unique_ptr<v1::MapChunkInfo> parseDLB_v1(const uint8_t* const buf, const size_t bufSize) {
         if ( nullptr == buf )

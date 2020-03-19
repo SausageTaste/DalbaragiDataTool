@@ -5,5 +5,5 @@
 
 
 int main(int argc, char** argv) {
-    return dal::parseDLB_v1(nullptr, 0) ? -1 : 0;
+    return daldata::parseDLB_v1(nullptr, 0) ? -1 : 0;
 }

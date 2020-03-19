@@ -4,7 +4,7 @@
 #include <cstring>
 
 
-namespace dal {
+namespace daldata {
 
     bool isBigEndian();
 

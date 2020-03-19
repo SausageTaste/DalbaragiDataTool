@@ -1,7 +1,7 @@
 #include "daltool/u_byteutils.h"
 
 
-namespace dal {
+namespace daldata {
 
     bool isBigEndian() {
         constexpr short int number = 0x1;
