@@ -2,8 +2,7 @@
 
 #include <memory>
 
-#define ZLIB_WINAPI
-#include <zlib.h>
+#include <miniz.h>
 
 #include <daltool/u_byteutils.h>
 
@@ -11,29 +10,9 @@
 namespace {
 
     size_t unzip(uint8_t* const dst, const size_t dstSize, const uint8_t* const src, const size_t srcSize) {
-        static_assert(sizeof(Bytef) == sizeof(uint8_t), "type inconsistency detected: Bytef != uint8_t");
-
-        uLongf decomBufSize = dstSize;
-
-        const auto res = uncompress(dst, &decomBufSize, src, srcSize);
-        switch ( res ) {
-
-        case Z_OK:
-            return decomBufSize;
-        case Z_BUF_ERROR:
-            // dalError("Zlib fail: buffer is not large enough");
-            return 0;
-        case Z_MEM_ERROR:
-            // dalError("Zlib fail: Insufficient memory");
-            return 0;
-        case Z_DATA_ERROR:
-            // dalError("Zlib fail: Corrupted data");
-            return 0;
-        default:
-            // dalError(fmt::format("Zlib fail: Unknown reason ({})", res));
-            return 0;
-
-        }
+        mz_ulong dstSizeBuf = dstSize;
+        const auto cmp_status = uncompress(dst, &dstSizeBuf, src, srcSize);
+        return 0;
     }
 
     // Returns nullptr containing unique_ptr and 0 on failure.

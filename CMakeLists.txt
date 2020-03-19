@@ -23,11 +23,11 @@ target_compile_features(dalDataTool PUBLIC cxx_std_14)
 set(repo_root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 set(extern_dir ${repo_root_dir}/extern)
 
-# zlib
-if (NOT TARGET zlibstatic)
-    add_subdirectory(${extern_dir}/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib)
-    target_link_libraries(dalDataTool PRIVATE zlibstatic)
-    target_include_directories(dalDataTool PRIVATE ${extern_dir}/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib)
+# miniz
+if (NOT TARGET miniz)
+    add_subdirectory(${extern_dir}/miniz ${CMAKE_CURRENT_BINARY_DIR}/miniz)
+    target_link_libraries(dalDataTool PRIVATE miniz)
+    target_include_directories(dalDataTool PRIVATE ${extern_dir}/miniz ${CMAKE_CURRENT_BINARY_DIR}/miniz)
 endif()
 
 # GLM
